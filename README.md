@@ -60,7 +60,7 @@ Net revenue = product sales minus cancelled product lines. Numbers: [`results/ed
 ![Monthly revenue](results/charts/01_monthly_revenue.png)
 
 - **The business is heavily seasonal.** Sep–Nov 2011 brought in £3.50M net, 37.5% of the 12 full months and almost as much as the whole of Jan–Jun (£3.69M). November alone was £1.43M, about 3× April (£0.48M). Stock, warehouse staff and marketing budget need to be in place by August.
-- The January dip in net revenue is mostly one order-entry error (see cleaning) that was raised and cancelled, not real demand.
+- The big gap between gross and net in January (£91.5k of returns) comes mostly from one order-entry error that was raised and cancelled (see cleaning), not from customers sending goods back.
 
 ![Weekday and hour](results/charts/02_weekday_hour.png)
 
