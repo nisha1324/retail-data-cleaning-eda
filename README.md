@@ -2,7 +2,7 @@
 
 Turning **541,909 messy real-world transactions** from a UK online gift retailer into a clean, trustworthy sales table, then exploring it for business insights.
 
-> **Status: in progress.** Cleaning pipeline and EDA are done (below). The customer view (repeat rate, Pareto) and final recommendations come next.
+> **Status: in progress.** Cleaning, EDA and the customer view are done (below). Final recommendations come next.
 
 ## Business problem
 The raw export is what a real business hands an analyst: a quarter of rows with no customer, duplicates, cancellations mixed in with sales, and postage and bank fees recorded as "products". Report revenue straight from it and every KPI is wrong. The goal is to make each cleaning decision **explicit, measured and repeatable**, so finance and marketing can trust the numbers built on it.
@@ -74,19 +74,40 @@ Net revenue = product sales minus cancelled product lines. Numbers: [`results/ed
 
 - The UK is 84.8% of net revenue. The biggest overseas markets are driven by a handful of accounts: the Netherlands (£283k) has 9 identified customers and Ireland (£259k) just 3. **Losing one key account abroad would wipe out a whole market**, so those accounts deserve named account management. Germany and France are broader (94 and 87 customers) and are the better base for growth.
 
+## Customer view (identified customers)
+Guest checkouts have no CustomerID, so this covers the 4,334 identified customers (85.3% of gross revenue). Numbers: [`results/customer_summary.md`](results/customer_summary.md).
+
+| Metric | Value |
+|---|---|
+| Repeat customers (2+ orders) | 65.3% |
+| One-order customers | 1,505 (34.7%), 6.5% of net revenue |
+| Median orders / median net spend | 2 / £647 |
+| Top 1% / 10% / 20% of customers | 30.2% / 60.2% / 73.8% of net revenue |
+| Bottom 50% of customers | 8.1% of net revenue |
+
+![Customer Pareto](results/charts/05_customer_pareto.png)
+
+- **Revenue is highly concentrated.** The top 20% of customers bring in 73.8% of net revenue, and the top 1% (about 43 accounts) bring in 30.2%. The single biggest customer (Netherlands, £279k) is 3.4% of the business on their own. These accounts need named account managers and a churn early-warning, because losing a few of them would show up in the P&L.
+
+![New vs returning](results/charts/06_new_vs_returning.png)
+
+- **Growth comes from existing customers.** Returning customers were 78.9% of identified gross revenue in Jan–Nov 2011, rising to 88.2% by November, so the autumn peak comes mainly from existing accounts ordering more. (Early months overstate "new" revenue because the data starts in Dec 2010, so older customers look new at first. January also includes the order-entry error that was later cancelled.)
+- **There's a retention gap to work on.** Of the 2,716 customers acquired before June 2011, 1,123 (41.3%) hadn't ordered in the 90 days before the data ends, worth £725,721 in lifetime net revenue. A win-back email to lapsed wholesalers ahead of the Sep–Nov season is a cheap first test.
+
 ## How to run
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python scripts/download_data.py   # ~24 MB -> data/raw/
 python scripts/clean_data.py      # -> data/clean/*.csv + results/data_quality_report.md
-python scripts/eda.py             # -> results/charts/*.png + results/eda_summary.md
+python scripts/eda.py             # -> results/charts/01-04 + results/eda_summary.md
+python scripts/customers.py       # -> results/charts/05-06 + results/customer_summary.md
 ```
 
 ## Roadmap
 - [x] Data-quality audit and cleaning pipeline
 - [x] EDA: net revenue trend, seasonality, weekday/hour patterns, top products and countries
-- [ ] Customer view: repeat-purchase rate and concentration (Pareto)
+- [x] Customer view: repeat-purchase rate and concentration (Pareto)
 - [ ] Written insights and recommendations
 
 **Stack:** Python · pandas · matplotlib
