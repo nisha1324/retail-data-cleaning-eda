@@ -2,7 +2,7 @@
 
 Turning **541,909 messy real-world transactions** from a UK online gift retailer into a clean, trustworthy sales table, then exploring it for business insights.
 
-> **Status: in progress.** Cleaning, EDA and the customer view are done (below). Final recommendations come next.
+> **TL;DR:** a seasonal, B2B-leaning business that runs on a few hundred repeat wholesale accounts. Protect those accounts, win back the lapsed ones before autumn, and fix the data capture that hides 14.7% of revenue.
 
 ## Business problem
 The raw export is what a real business hands an analyst: a quarter of rows with no customer, duplicates, cancellations mixed in with sales, and postage and bank fees recorded as "products". Report revenue straight from it and every KPI is wrong. The goal is to make each cleaning decision **explicit, measured and repeatable**, so finance and marketing can trust the numbers built on it.
@@ -94,6 +94,23 @@ Guest checkouts have no CustomerID, so this covers the 4,334 identified customer
 - **Growth comes from existing customers.** Returning customers were 78.9% of identified gross revenue in Jan–Nov 2011, rising to 88.2% by November, so the autumn peak comes mainly from existing accounts ordering more. (Early months overstate "new" revenue because the data starts in Dec 2010, so older customers look new at first. January also includes the order-entry error that was later cancelled.)
 - **There's a retention gap to work on.** Of the 2,716 customers acquired before June 2011, 1,123 (41.3%) hadn't ordered in the 90 days before the data ends, worth £725,721 in lifetime net revenue. A win-back email to lapsed wholesalers ahead of the Sep–Nov season is a cheap first test.
 
+## Recommendations
+Ranked by expected impact against effort. Every figure comes from the outputs above.
+
+| # | Action | Why (evidence) | Owner |
+|---|---|---|---|
+| 1 | **Key-account programme for the top ~43 customers (top 1%)**: named manager, quarterly check-in, churn alert when order gaps grow | Top 1% = 30.2% and top 20% = 73.8% of net revenue. Whole overseas markets rest on single accounts (Ireland: 3 customers, £259k) | Sales |
+| 2 | **Win-back campaign in July–August** aimed at lapsed pre-June customers | 1,123 customers (41.3%) had lapsed, worth £725,721 lifetime. Sep–Nov is 37.5% of annual revenue, so reactivate them before the peak | Marketing |
+| 3 | **Plan stock and staffing for the autumn peak by August** | November (£1.43M) is about 3× April (£0.48M). The peak comes from returning customers ordering more (88.2% of revenue in November) | Ops / Purchasing |
+| 4 | **Capture an email or account at guest checkout** | 14.7% of revenue can't be tied to a customer, so CLV and retention are measured on only 85% of the business | Product / E-commerce |
+| 5 | **Add an order-quantity sanity check** at order entry | Two entry errors (80,995 and 74,215 units, £245,653) were raised and then cancelled, distorting monthly figures | Sales ops / IT |
+| 6 | **Time campaigns and support for weekday office hours** | No Saturday orders. 74.4% of revenue is ordered 10:00–15:59 | Marketing / Support |
+| 7 | **Grow Germany and France through their broad customer bases** rather than relying on single-account markets | Germany has 94 and France 87 customers, compared with 9 in the Netherlands and 3 in Ireland | Sales |
+
+**Suggested KPIs to track monthly:** net revenue (after returns), return rate, top-20% revenue share, share of customers lapsed for 90+ days, and guest-checkout revenue share.
+
+**Limitations:** one year of data (Dec 2010 – Dec 2011), so seasonality rests on a single cycle. There is no cost or margin data, so the analysis ranks revenue, not profit. Customer metrics exclude guest checkouts.
+
 ## How to run
 ```bash
 python -m venv .venv && source .venv/bin/activate
@@ -108,6 +125,6 @@ python scripts/customers.py       # -> results/charts/05-06 + results/customer_s
 - [x] Data-quality audit and cleaning pipeline
 - [x] EDA: net revenue trend, seasonality, weekday/hour patterns, top products and countries
 - [x] Customer view: repeat-purchase rate and concentration (Pareto)
-- [ ] Written insights and recommendations
+- [x] Written insights and recommendations
 
 **Stack:** Python · pandas · matplotlib
